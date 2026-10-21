@@ -72,3 +72,27 @@ test('chapter scrolling advances once per downward gesture and ignores restorati
  windowEvents.keydown({target,key:'PageDown',repeat:true});assert.equal(hits,4);
  windowEvents.keyup();windowEvents.keydown({target,key:'PageDown',repeat:false});assert.equal(hits,5);
 });
+
+test('scrolling toward the top returns to the previous chapter once per gesture',()=>{
+ let now=1000,top=false,allowed=true,hits=0;
+ const rootEvents={},windowEvents={};
+ const context=vm.createContext({Date:{now:()=>now},window:{addEventListener:(name,handler)=>windowEvents[name]=handler}});
+ vm.runInContext(read('reading-tap.js'),context);
+ const controller=context.bindChapterAdvance({addEventListener:(n,h)=>rootEvents[n]=h},{canAdvance:()=>false,atBottom:()=>false,advance:()=>assert.fail('Wrong direction'),canRetreat:()=>allowed,atTop:()=>top,retreat:()=>{hits++;controller.reset()}});
+ const target={closest:()=>null};const wheel=deltaY=>rootEvents.wheel({target,deltaY});
+ wheel(-100);windowEvents.scroll();assert.equal(hits,0);
+ top=true;windowEvents.scroll();assert.equal(hits,1);
+ now+=50;wheel(-100);windowEvents.scroll();assert.equal(hits,1);
+ now+=500;wheel(-100);assert.equal(hits,2);
+ controller.reset();windowEvents.scroll();assert.equal(hits,2);
+ // At the first chapter or with a dialog open, the guard blocks navigation.
+ allowed=false;now+=500;wheel(-100);assert.equal(hits,2);allowed=true;
+ rootEvents.touchstart({target,touches:[{clientY:200}]});
+ rootEvents.touchmove({touches:[{clientY:300}]});assert.equal(hits,3);
+ rootEvents.touchmove({touches:[{clientY:400}]});windowEvents.scroll();assert.equal(hits,3);
+ rootEvents.touchstart({target,touches:[{clientY:400}]});
+ rootEvents.touchmove({touches:[{clientY:200}]});assert.equal(hits,3);
+ windowEvents.keydown({target,key:'PageUp',repeat:false});assert.equal(hits,4);
+ windowEvents.keydown({target,key:'PageUp',repeat:true});assert.equal(hits,4);
+ windowEvents.keyup();windowEvents.keydown({target,key:' ',shiftKey:true,repeat:false});assert.equal(hits,5);
+});

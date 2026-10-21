@@ -1,4 +1,4 @@
-const CACHE='yomori-v13';
+const CACHE='yomori-v14';
 const FILES=['./','./index.html','./style.css','./app.js','./ui-language.js','./word-lookup.js','./reading-tap.js','./progress-store.js','./jszip.min.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-v2-32.png','./icon-v2-180.png','./icon-v2-192.png','./icon-v2-512.png'];
 self.addEventListener('install',e=>e.waitUntil((async()=>{const cache=await caches.open(CACHE);for(const path of FILES){const r=await fetch(path==='./index.html'?'./':path,{cache:'reload'});if(!r.ok||r.redirected)throw Error('App shell unavailable');await cache.put(path,r)}await self.skipWaiting()})()));
 self.addEventListener('activate',e=>e.waitUntil((async()=>{await Promise.all((await caches.keys()).filter(k=>k.startsWith('yomori-')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})()));

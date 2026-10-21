@@ -26,7 +26,7 @@ Both options provide HTTPS for PWA installation. No backend, database, custom do
 - Import local TXT and DRM-free EPUB files, including EPUB illustrations.
 - Preview TXT before import and choose UTF-8, GB18030 / GBK, Big5, or UTF-16.
 - Search the bookshelf and resume from the saved chapter and position.
-- Scroll down at the end of a chapter to continue to the next chapter automatically. The reading header shows the current chapter title.
+- Scroll down at the end of a chapter to continue to the next chapter automatically. Scroll up at the start to return to the previous chapter's end. The reading header shows the current chapter title.
 - Open reading settings from the bookshelf or reader to adjust font size, font family, line spacing, margins, paragraph spacing, indentation, and background.
 - Tap empty reading space to show or hide controls. Open the right-side contents drawer with the menu button.
 - Change **Reading settings → Language** between **English** and **简体中文**. The choice is stored on the device; book text is unchanged.

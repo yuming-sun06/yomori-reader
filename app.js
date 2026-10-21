@@ -46,7 +46,10 @@ $('backButton').onclick=async()=>{closeWordPopup();clearTimeout(saveTimer);await
 chapterScrolling=bindChapterAdvance($('reader'),{
  canAdvance:()=>Boolean(current&&!restoring&&!$('reader').hidden&&!document.querySelector('dialog[open]')&&current.progress.chapter<current.chapters.length-1),
  atBottom:()=>Math.ceil(window.scrollY+window.innerHeight)>=document.documentElement.scrollHeight-2,
- advance:()=>showChapter(current.progress.chapter+1)
+ advance:()=>showChapter(current.progress.chapter+1),
+ canRetreat:()=>Boolean(current&&!restoring&&!$('reader').hidden&&!document.querySelector('dialog[open]')&&current.progress.chapter>0),
+ atTop:()=>window.scrollY<=2,
+ retreat:()=>showChapter(current.progress.chapter-1,1)
 });
 $('prevChapter').onclick=()=>showChapter(current.progress.chapter-1);$('nextChapter').onclick=()=>showChapter(current.progress.chapter+1);
 $('progressRange').onchange=e=>{const p=Number(e.target.value)/1000*current.chapters.length;const i=Math.min(current.chapters.length-1,Math.floor(p));showChapter(i,Math.min(1,p-i))};
