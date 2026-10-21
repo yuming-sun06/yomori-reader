@@ -27,7 +27,7 @@ Both options provide HTTPS for PWA installation. No backend, database, custom do
 - Preview TXT before import and choose UTF-8, GB18030 / GBK, Big5, or UTF-16.
 - Search the bookshelf and resume from the saved chapter and position.
 - Scroll down at the end of a chapter to continue to the next chapter automatically.
-- Adjust font size, font family, line spacing, margins, paragraph spacing, indentation, and background.
+- Open reading settings from the bookshelf or reader to adjust font size, font family, line spacing, margins, paragraph spacing, indentation, and background.
 - Tap empty reading space to show or hide controls. Open the right-side contents drawer with the menu button.
 - Change **Reading settings → Language** between **English** and **简体中文**. The choice is stored on the device; book text is unchanged.
 - Tap English words for a Chinese reference translation and English dictionary entries when available. Word lookup can be disabled in reading settings.

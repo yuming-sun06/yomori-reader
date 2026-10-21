@@ -43,3 +43,5 @@ dialog.toc-drawer[open]{display:flex;flex-direction:column;animation:drawer-in .
 .reading-content .tap-word{touch-action:manipulation;-webkit-tap-highlight-color:rgba(110,145,90,.18)}
 
 .ui-language-setting{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:20px 0;font-size:14px}.ui-language-setting select{font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+
+.library-settings{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.library-settings svg{width:18px;height:18px}
