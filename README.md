@@ -1,2 +1,70 @@
-# yomori-reader
-An offline-first TXT and EPUB reader with bilingual UI, local reading progress, and inline word lookup.
+# Yomori Reader
+
+An offline-first, browser-local TXT and EPUB reader. The app has an English / Simplified Chinese interface, adjustable typography, saved reading progress, and inline English word lookup.
+
+## Run locally
+
+No build step, package installation, account, API key, or token is required.
+
+```sh
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000`. Serve the repository root, which contains `index.html`. Use HTTPS on a remote host to enable service workers and home-screen installation.
+
+## Features
+
+- Import local TXT and DRM-free EPUB files, including EPUB illustrations.
+- Preview TXT before import and choose UTF-8, GB18030 / GBK, Big5, or UTF-16.
+- Search the bookshelf and resume from the saved chapter and position.
+- Adjust font size, font family, line spacing, margins, paragraph spacing, indentation, and background.
+- Tap empty reading space to show or hide controls. Open the right-side contents drawer with the menu button.
+- Change **Reading settings → Language** between **English** and **简体中文**. The choice is stored on the device; book text is unchanged.
+- Tap English words for a Chinese reference translation and English dictionary entries when available. Word lookup can be disabled in reading settings.
+- Install as a PWA and cache the app shell for offline use.
+
+## iPhone installation
+
+Open the hosted HTTPS page in Safari, choose **Share → Add to Home Screen**, and launch it from the home screen. Load the app online first and wait for **Offline ready**. Offline startup depends on the browser and hosting authentication; verify it on the target device.
+
+## Data and privacy
+
+Books and reading progress stay in the current browser. Book text and illustrations use IndexedDB. Checkpoints are stored separately, with a small localStorage backup. Interface preferences and successful dictionary results are cached locally.
+
+Word lookup is the only built-in external data request: the selected word is sent to MyMemory for a Chinese reference translation and Free Dictionary API for English definitions. The app does not send the book, surrounding paragraph, or title. New lookups require internet; cached results can be reused offline. External services may be unavailable or rate-limited. Single-word translations may not match the meaning in context.
+
+There is no cross-device synchronization. Browser data removal or storage eviction can remove imported books and progress. Keep the original files.
+
+## Project layout
+
+This is a buildless static app. Files are intentionally stored at the repository root:
+
+- `index.html`, `style.css`: interface and styling
+- `app.js`: library, import, reader, and settings behavior
+- `ui-language.js`: English / Simplified Chinese interface localization
+- `progress-store.js`: independent progress storage and backup
+- `reading-tap.js`: touch handling and synthetic-click deduplication
+- `word-lookup.js`: inline word marking, dictionary requests, and caching
+- `sw.js`, `manifest.webmanifest`: PWA app shell and installation metadata
+- `icon.svg`, `icon-*.png`: editable icon source and exported images
+- `jszip.min.js`: bundled JSZip distribution for EPUB parsing
+
+The original hosting provider configuration, repository credentials, local runtime files, imported books, and historical Git metadata are excluded from this repository.
+
+## Checks
+
+```sh
+node --check app.js
+node --check ui-language.js
+node --check progress-store.js
+node --check reading-tap.js
+node --check word-lookup.js
+node --check sw.js
+node --test test.cjs
+```
+
+The automated checks cover encoding handling, gesture filtering, localization, and static asset references. They do not replace testing Safari, PWA installation, and external dictionary services on a real device.
+
+## Third-party notices
+
+JSZip 3.10.1 is bundled under its MIT license option. Its distribution includes pako under the MIT license. See `LICENSE-JSZIP.txt` and `LICENSE-PAKO.txt`. Copyright notices in the bundled distribution are retained.

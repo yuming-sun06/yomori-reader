@@ -1,0 +1,23 @@
+# Secrets and local credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+# Hosting identity, local caches, and dependencies
+.openai/
+.codex/
+node_modules/
+.cache/
+.DS_Store
+*.log
+# Personal reading data and generated archives
+books/
+imports/
+*.epub
+*.zip
+*.tar.gz
