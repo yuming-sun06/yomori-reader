@@ -13,6 +13,8 @@ secrets*.json
 .codex/
 node_modules/
 dist/
+playwright-report/
+test-results/
 .cache/
 .DS_Store
 *.log

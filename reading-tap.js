@@ -13,13 +13,13 @@ function bindReadingTap(root,onTap){
 
 // Change chapters only after directional user input, once per gesture.
 function bindChapterAdvance(root,{canAdvance,atBottom,advance,canRetreat=()=>false,atTop=()=>false,retreat=()=>{}}){
- let active=0,used=true,touch=null,lastWheel=-Infinity;
+ let active=0,used=true,touch=null,touchNavigated=false,lastWheel=-Infinity;
  const blocked=target=>target?.closest?.('button,a,input,textarea,select,dialog,.reader-top,.reader-bottom,.word-popup');
  const check=()=>{if(!active||used)return;const backward=active<0;if(backward?(!canRetreat()||!atTop()):(!canAdvance()||!atBottom()))return;used=true;active=0;(backward?retreat:advance)();return true};
- const reset=()=>{active=0;used=true;touch=null;lastWheel=Date.now()};
+ const reset=()=>{active=0;used=true;touch=null;touchNavigated=false;lastWheel=Date.now()};
  root.addEventListener('wheel',event=>{if(blocked(event.target)||event.ctrlKey)return;const now=Date.now();if(now-lastWheel>220)used=false;lastWheel=now;active=Math.sign(event.deltaY);if(check()&&event.cancelable)event.preventDefault()},{passive:false});
- root.addEventListener('touchstart',event=>{active=0;used=false;touch=event.touches.length===1&&!blocked(event.target)?event.touches[0].clientY:null},{passive:true});
- root.addEventListener('touchmove',event=>{if(touch===null||event.touches.length!==1){active=0;return}const y=event.touches[0].clientY,delta=touch-y;active=delta>12?1:delta< -12?-1:0;if(check()&&event.cancelable)event.preventDefault()},{passive:false});
+ root.addEventListener('touchstart',event=>{active=0;used=false;touchNavigated=false;touch=event.touches.length===1&&!blocked(event.target)?event.touches[0].clientY:null},{passive:true});
+ root.addEventListener('touchmove',event=>{if(touchNavigated){if(event.cancelable)event.preventDefault();return}if(touch===null||event.touches.length!==1){active=0;return}const y=event.touches[0].clientY,delta=touch-y;active=delta>12?1:delta< -12?-1:0;if(check()){touchNavigated=true;if(event.cancelable)event.preventDefault()}},{passive:false});
  root.addEventListener('touchcancel',reset,{passive:true});
  window.addEventListener('keydown',event=>{if(blocked(event.target)||event.ctrlKey||event.metaKey||event.altKey||(event.shiftKey&&event.key!==' '))return;const direction=['ArrowUp','PageUp','Home'].includes(event.key)||(event.key===' '&&event.shiftKey)?-1:['ArrowDown','PageDown','End',' '].includes(event.key)?1:0;if(!direction)return;if(!event.repeat)used=false;active=direction;if(check())event.preventDefault?.()});
  window.addEventListener('keyup',()=>{active=0});

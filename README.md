@@ -73,7 +73,26 @@ node --check sw.js
 node --test test.cjs
 ```
 
-The automated checks cover encoding handling, gesture filtering, localization, and static asset references. They do not replace testing Safari, PWA installation, and external dictionary services on a real device.
+The unit checks cover encoding handling, gesture filtering, localization, and static asset references.
+
+### End-to-end browser tests
+
+With Node.js 22 or newer installed:
+
+```sh
+npm ci
+npx playwright install chromium webkit
+npm test
+npm run test:e2e
+```
+
+Playwright starts a local server automatically and tests the actual `dist` deployment files under `/reader/`, including the hosting redirect from `index.html` to the directory URL. Each test uses fresh browser storage and imports a generated TXT fixture; it does not touch your personal library or the production website.
+
+Coverage includes TXT import, wheel navigation in both directions, returning to the previous chapter's end, first/last chapter boundaries, momentum deduplication, chapter titles, contents and navigation buttons, library settings, language and font persistence, saved reading position, and offline reload with imported books. Chromium tests also send native browser touch input to verify swipe navigation and prevent the remaining gesture from scrolling the new chapter. Offline service worker coverage runs in Chromium; the corresponding WebKit case is explicitly skipped.
+
+The suite runs in desktop Chromium, WebKit with a narrow viewport, and a Chromium touch project. WebKit and touch emulation do not replace testing installation, touch behavior, and offline startup on a real iPhone. External dictionary availability is outside this suite.
+
+The **Tests** GitHub Actions workflow runs unit and E2E checks on pull requests and pushes to `main`, independently of the optional GitHub Pages workflow. It uploads an HTML report and failure traces/screenshots for 7 days. Run `npm run test:e2e:report` to open a local report. Cloudflare's existing automatic deployments are independent of these checks; this workflow does not configure merge protection or block deployment.
 
 ## Third-party notices
 
