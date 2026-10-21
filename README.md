@@ -97,3 +97,6 @@ The **Tests** GitHub Actions workflow runs unit and E2E checks on pull requests 
 ## Third-party notices
 
 JSZip 3.10.1 is bundled under its MIT license option. Its distribution includes pako under the MIT license. See `LICENSE-JSZIP.txt` and `LICENSE-PAKO.txt`. Copyright notices in the bundled distribution are retained.
+# 协同阅读 / Read together
+
+阅读器中的「Read together」支持邀请码房间、实时阅读位置、选中文字和行内评论，并在网络中断后自动重连。双方需在本机导入同一版本的书籍。使用说明、公共信令服务、隐私与网络限制见 [COLLABORATION.md](./COLLABORATION.md)。

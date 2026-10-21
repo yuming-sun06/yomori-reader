@@ -34,7 +34,7 @@ async function openBook(id){try{current=await request(db.transaction('books').ob
 function resolvePath(base,path){try{return decodeURIComponent(new URL(path,'https://epub.local/'+base).pathname.slice(1))}catch{return ''}}
 function showChapter(index,fraction=0){if(!current)return;chapterScrolling?.reset();closeWordPopup();clearTimeout(saveTimer);restoring=true;freeAssets();index=Math.max(0,Math.min(current.chapters.length-1,index));current.progress={chapter:index,fraction};const c=current.chapters[index];$('readerTitle').textContent=c.title;$('readerTitle').title=current.title+' · '+c.title;$('readingContent').innerHTML=`<h1>${escapeHTML(c.title)}</h1>`+c.html;
  $('readingContent').querySelectorAll('img[data-asset]').forEach(el=>{const blob=current.assets?.[el.dataset.asset];if(blob)el.src=assetURL(blob);else el.remove()});$('prevChapter').disabled=index===0;$('nextChapter').disabled=index===current.chapters.length-1;$('chapterCounter').textContent=`${index+1} / ${current.chapters.length}`;
- const restore=()=>{const y=$('readingContent').offsetTop+fraction*Math.max(0,$('readingContent').offsetHeight-innerHeight+100);window.scrollTo(0,fraction?y:0);updateProgressUI();restoring=false};
+ const restore=()=>{const y=$('readingContent').offsetTop+fraction*Math.max(0,$('readingContent').offsetHeight-innerHeight+100);window.scrollTo(0,fraction?y:0);updateProgressUI();restoring=false;document.dispatchEvent(new Event('yomori:chapter'))};
  markEnglishWords($('readingContent'));const images=[...$('readingContent').querySelectorAll('img')];Promise.all(images.map(im=>im.complete?Promise.resolve():new Promise(r=>{im.onload=r;im.onerror=r}))).then(()=>requestAnimationFrame(restore));updateProgressUI();saveCurrent()}
 function readFraction(){const el=$('readingContent');return Math.max(0,Math.min(1,(scrollY-el.offsetTop)/Math.max(1,el.offsetHeight-innerHeight+100)))}
 function updateProgressUI(){if(!current)return;const r=(current.progress.chapter+current.progress.fraction)/current.chapters.length;$('progressText').textContent=Math.round(r*100)+'%';$('progressRange').value=Math.round(r*1000)}
@@ -42,7 +42,7 @@ async function saveCurrent(){if(!current)return;const book=current;const record=
 
 window.addEventListener('scroll',()=>{closeWordPopup();if(!current||restoring)return;current.progress.fraction=readFraction();updateProgressUI();$('savedText').textContent='自动保存';clearTimeout(saveTimer);saveTimer=setTimeout(saveCurrent,350)},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)saveCurrent()});window.addEventListener('pagehide',()=>saveCurrent());
-$('backButton').onclick=async()=>{closeWordPopup();clearTimeout(saveTimer);await saveCurrent();current=null;freeAssets();$('reader').hidden=true;$('library').hidden=false;document.body.classList.remove('reading');window.scrollTo(0,0);await refreshBooks()};
+$('backButton').onclick=async()=>{document.dispatchEvent(new Event('yomori:bookclose'));closeWordPopup();clearTimeout(saveTimer);await saveCurrent();current=null;freeAssets();$('reader').hidden=true;$('library').hidden=false;document.body.classList.remove('reading');window.scrollTo(0,0);await refreshBooks()};
 chapterScrolling=bindChapterAdvance($('reader'),{
  canAdvance:()=>Boolean(current&&!restoring&&!$('reader').hidden&&!document.querySelector('dialog[open]')&&current.progress.chapter<current.chapters.length-1),
  atBottom:()=>Math.ceil(window.scrollY+window.innerHeight)>=document.documentElement.scrollHeight-2,

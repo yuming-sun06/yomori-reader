@@ -1,5 +1,5 @@
-const CACHE='yomori-v15';
-const FILES=['./','./index.html','./style.css','./app.js','./ui-language.js','./word-lookup.js','./reading-tap.js','./progress-store.js','./jszip.min.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-v2-32.png','./icon-v2-180.png','./icon-v2-192.png','./icon-v2-512.png'];
+const CACHE='yomori-v16';
+const FILES=['./','./index.html','./style.css','./app.js','./collaboration.js','./collaboration-ui.js','./ui-language.js','./word-lookup.js','./reading-tap.js','./progress-store.js','./jszip.min.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-v2-32.png','./icon-v2-180.png','./icon-v2-192.png','./icon-v2-512.png'];
 self.addEventListener('install',e=>e.waitUntil((async()=>{const cache=await caches.open(CACHE);for(const path of FILES){const r=await fetch(path==='./index.html'?'./':path,{cache:'reload'});if(!r.ok||r.redirected)throw Error('App shell unavailable');await cache.put(path,r)}await self.skipWaiting()})()));
 self.addEventListener('activate',e=>e.waitUntil((async()=>{await Promise.all((await caches.keys()).filter(k=>k.startsWith('yomori-')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})()));
 self.addEventListener('message',e=>{if(e.data==='CHECK_CACHE')e.waitUntil((async()=>{const c=await caches.open(CACHE);if((await Promise.all(FILES.map(p=>c.match(p)))).every(Boolean))e.source?.postMessage('OFFLINE_READY')})())});

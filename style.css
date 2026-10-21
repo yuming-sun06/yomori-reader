@@ -45,3 +45,13 @@ dialog.toc-drawer[open]{display:flex;flex-direction:column;animation:drawer-in .
 .ui-language-setting{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:20px 0;font-size:14px}.ui-language-setting select{font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
 
 .library-settings{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.library-settings svg{width:18px;height:18px}
+
+::highlight(collab){background:#e8ce72;color:#242424}
+#collabDialog input{display:block;width:100%;font-family:monospace;box-sizing:border-box}
+#collabDialog button{margin:4px;padding:8px}
+#collabDialog label{display:block;margin-top:12px}
+#collabComments{padding-left:20px;max-height:35vh;overflow:auto}
+#collabComments p{white-space:pre-wrap;overflow-wrap:anywhere}
+#collabComposer{position:fixed;bottom:12px;right:12px;z-index:30;max-width:300px;padding:12px;background:var(--bg,#f5f3ed);color:var(--text,#222);border:1px solid #aaa;border-radius:12px;box-shadow:0 3px 20px #0003}
+#collabComposer textarea{display:block;width:100%;box-sizing:border-box}
+.collab-note{position:absolute;z-index:4;max-width:34px;padding:2px;border:1px solid #b39430;border-radius:5px;background:#fff2ac}

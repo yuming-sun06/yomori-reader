@@ -7,7 +7,7 @@ const output = path.join(root, 'dist');
 // Publish only the app and its license notices, never the whole checkout.
 const files = [
   'index.html', 'style.css', 'app.js', 'ui-language.js',
-  'progress-store.js', 'reading-tap.js', 'word-lookup.js',
+  'collaboration.js', 'collaboration-ui.js', 'progress-store.js', 'reading-tap.js', 'word-lookup.js',
   'jszip.min.js', 'sw.js', 'manifest.webmanifest', 'icon.svg',
   'icon-192.png', 'icon-512.png', 'icon-v2-32.png',
   'icon-v2-180.png', 'icon-v2-192.png', 'icon-v2-512.png',
