@@ -17,7 +17,7 @@ Open `http://localhost:8000`. Serve the repository root, which contains `index.h
 See [Free deployment guide](DEPLOYMENT.md) for step-by-step setup:
 
 - **Cloudflare Pages**: connect a public or private GitHub repository, set the build command to `node scripts/build-site.cjs` and output directory to `dist`. Use the free `pages.dev` address.
-- **GitHub Pages**: for a public repository on GitHub Free, choose **Settings → Pages → Source → GitHub Actions**, then run the included **Deploy GitHub Pages** workflow. Future pushes to `main` deploy automatically.
+- **GitHub Pages**: for a public repository on GitHub Free, choose **Settings → Pages → Source → GitHub Actions**, set the repository Actions variable `ENABLE_GITHUB_PAGES` to `true`, then run the included **Deploy GitHub Pages** workflow. Future pushes to `main` deploy automatically.
 
 Both options provide HTTPS for PWA installation. No backend, database, custom domain, or application secrets are needed. Free plan limits apply; see the linked guide for official sources, verification steps, and private-repository requirements. Node.js is only used to prepare the deployment folder; local reading still needs no build step.
 

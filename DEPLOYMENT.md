@@ -28,10 +28,11 @@ GitHub Free includes Pages for public repositories. Pages for a private reposito
 
 1. Make sure the deployment files have been merged into `main`.
 2. Open the repository's **Settings → Pages → Build and deployment → Source** and select **GitHub Actions**.
-3. Open **Actions → Deploy GitHub Pages → Run workflow**, select `main`, and run it. If Actions is disabled on your fork, enable it first.
-4. Wait for deployment to succeed, then visit the URL shown by the workflow. This repository's default address is `https://chenxinhang12345.github.io/yomori-reader/`; it becomes available only after Pages is enabled and deployment succeeds. Forks use their own username and repository name.
+3. Open **Settings → Secrets and variables → Actions → Variables**, create a repository variable named `ENABLE_GITHUB_PAGES`, and set it to `true`. The workflow skips deployment unless this variable is set.
+4. Open **Actions → Deploy GitHub Pages → Run workflow**, select `main`, and run it. If Actions is disabled on your fork, enable it first.
+5. Wait for deployment to succeed, then visit the URL shown by the workflow. This repository's default address is `https://chenxinhang12345.github.io/yomori-reader/`; it becomes available only after Pages is enabled and deployment succeeds. Forks use their own username and repository name.
 
-Future pushes to `main` automatically run checks and deploy. The workflow uses permissions granted to GitHub's automatically provided `GITHUB_TOKEN`; no personal access token or repository secrets are needed. A run before Pages is enabled may fail because Pages is not configured. Complete step 2 and rerun the workflow. If an environment protection error appears, check that the `github-pages` environment allows deployment from `main`. If you only use Cloudflare, you can disable the **Deploy GitHub Pages** workflow on the Actions page.
+Future pushes to `main` automatically run checks and deploy. The workflow uses permissions granted to GitHub's automatically provided `GITHUB_TOKEN`; no personal access token or repository secrets are needed. A run before Pages is enabled may fail because Pages is not configured. Complete step 2 and rerun the workflow. If an environment protection error appears, check that the `github-pages` environment allows deployment from `main`. If you only use Cloudflare, leave `ENABLE_GITHUB_PAGES` unset. The GitHub Pages jobs will be skipped, and Cloudflare will continue deploying through its own Git integration. Previous failed GitHub Pages runs remain in the workflow history; they do not indicate a Cloudflare deployment failure.
 
 The app uses relative asset paths and supports the `/yomori-reader/` subpath on GitHub Pages. See [pages.yml](.github/workflows/pages.yml) and [GitHub's custom workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 

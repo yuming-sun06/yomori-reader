@@ -14,6 +14,8 @@ concurrency:
 
 jobs:
   build:
+    # Opt in only after configuring a supported GitHub Pages site.
+    if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
