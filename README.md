@@ -12,9 +12,9 @@ python3 -m http.server 8000
 
 Open `http://localhost:8000`. Serve the repository root, which contains `index.html`. Use HTTPS on a remote host to enable service workers and home-screen installation.
 
-## Free deployment / 免费部署
+## Free deployment
 
-See [免费部署指南](DEPLOYMENT.md) for step-by-step setup:
+See [Free deployment guide](DEPLOYMENT.md) for step-by-step setup:
 
 - **Cloudflare Pages**: connect a public or private GitHub repository, set the build command to `node scripts/build-site.cjs` and output directory to `dist`. Use the free `pages.dev` address.
 - **GitHub Pages**: for a public repository on GitHub Free, choose **Settings → Pages → Source → GitHub Actions**, then run the included **Deploy GitHub Pages** workflow. Future pushes to `main` deploy automatically.
