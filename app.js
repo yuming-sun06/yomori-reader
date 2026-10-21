@@ -4,6 +4,7 @@ const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>'
 const colors=['#526b56','#89745e','#737e95','#9c756b','#697d7c','#8b8966'];
 const progressStorage=new ProgressStore(indexedDB,{getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value),removeItem:key=>localStorage.removeItem(key)});
 let lastSaveNotice='',lastSaveNoticeAt=0;
+let chapterScrolling=null;
 let db,books=[],current=null,assetURLs=[],libraryURLs=[],saveTimer,toastTimer,deleteId,restoring=false;
 let settings={font:18,line:1.95,family:'sans',theme:'paper',margin:20,paragraph:1.1,indent:2,wordLookup:true};
 try{settings={...settings,...JSON.parse(localStorage.getItem('yomori-settings')||'{}')}}catch{}
@@ -31,7 +32,7 @@ function freeAssets(){assetURLs.forEach(URL.revokeObjectURL);assetURLs=[]}
 function assetURL(blob){const u=URL.createObjectURL(blob);assetURLs.push(u);return u}
 async function openBook(id){try{current=await request(db.transaction('books').objectStore('books').get(id));if(!current)throw Error('找不到书籍');progressStorage.merge(current,await progressStorage.read(id));current.progress=current.progress||{chapter:0,fraction:0};$('library').hidden=true;$('reader').hidden=false;document.body.classList.add('reading');setControlsVisible(true);$('readerTitle').textContent=current.title;applySettings();showChapter(current.progress.chapter,current.progress.fraction)}catch(e){toast('打开失败：'+e.message)}}
 function resolvePath(base,path){try{return decodeURIComponent(new URL(path,'https://epub.local/'+base).pathname.slice(1))}catch{return ''}}
-function showChapter(index,fraction=0){if(!current)return;closeWordPopup();clearTimeout(saveTimer);restoring=true;freeAssets();index=Math.max(0,Math.min(current.chapters.length-1,index));current.progress={chapter:index,fraction};const c=current.chapters[index];$('readingContent').innerHTML=`<h1>${escapeHTML(c.title)}</h1>`+c.html;
+function showChapter(index,fraction=0){if(!current)return;chapterScrolling?.reset();closeWordPopup();clearTimeout(saveTimer);restoring=true;freeAssets();index=Math.max(0,Math.min(current.chapters.length-1,index));current.progress={chapter:index,fraction};const c=current.chapters[index];$('readingContent').innerHTML=`<h1>${escapeHTML(c.title)}</h1>`+c.html;
  $('readingContent').querySelectorAll('img[data-asset]').forEach(el=>{const blob=current.assets?.[el.dataset.asset];if(blob)el.src=assetURL(blob);else el.remove()});$('prevChapter').disabled=index===0;$('nextChapter').disabled=index===current.chapters.length-1;$('chapterCounter').textContent=`${index+1} / ${current.chapters.length}`;
  const restore=()=>{const y=$('readingContent').offsetTop+fraction*Math.max(0,$('readingContent').offsetHeight-innerHeight+100);window.scrollTo(0,fraction?y:0);updateProgressUI();restoring=false};
  markEnglishWords($('readingContent'));const images=[...$('readingContent').querySelectorAll('img')];Promise.all(images.map(im=>im.complete?Promise.resolve():new Promise(r=>{im.onload=r;im.onerror=r}))).then(()=>requestAnimationFrame(restore));updateProgressUI();saveCurrent()}
@@ -42,6 +43,11 @@ async function saveCurrent(){if(!current)return;const book=current;const record=
 window.addEventListener('scroll',()=>{closeWordPopup();if(!current||restoring)return;current.progress.fraction=readFraction();updateProgressUI();$('savedText').textContent='自动保存';clearTimeout(saveTimer);saveTimer=setTimeout(saveCurrent,350)},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)saveCurrent()});window.addEventListener('pagehide',()=>saveCurrent());
 $('backButton').onclick=async()=>{closeWordPopup();clearTimeout(saveTimer);await saveCurrent();current=null;freeAssets();$('reader').hidden=true;$('library').hidden=false;document.body.classList.remove('reading');window.scrollTo(0,0);await refreshBooks()};
+chapterScrolling=bindChapterAdvance($('reader'),{
+ canAdvance:()=>Boolean(current&&!restoring&&!$('reader').hidden&&!document.querySelector('dialog[open]')&&current.progress.chapter<current.chapters.length-1),
+ atBottom:()=>Math.ceil(window.scrollY+window.innerHeight)>=document.documentElement.scrollHeight-2,
+ advance:()=>showChapter(current.progress.chapter+1)
+});
 $('prevChapter').onclick=()=>showChapter(current.progress.chapter-1);$('nextChapter').onclick=()=>showChapter(current.progress.chapter+1);
 $('progressRange').onchange=e=>{const p=Number(e.target.value)/1000*current.chapters.length;const i=Math.min(current.chapters.length-1,Math.floor(p));showChapter(i,Math.min(1,p-i))};
 function openToc(){if(!current)return;closeWordPopup();$('tocBookTitle').textContent=current.title;$('tocList').innerHTML=current.chapters.map((c,i)=>`<button data-chapter="${i}" class="${i===current.progress.chapter?'active':''}" ${i===current.progress.chapter?'aria-current="location"':''}>${escapeHTML(c.title)}</button>`).join('');$('tocList').querySelectorAll('button').forEach(b=>b.onclick=()=>{showChapter(Number(b.dataset.chapter));$('tocDialog').close()});$('tocDialog').showModal();$('tocButton').setAttribute('aria-expanded','true');$('bottomTocButton').setAttribute('aria-expanded','true');$('tocList').querySelector('.active')?.scrollIntoView({block:'nearest'})}
