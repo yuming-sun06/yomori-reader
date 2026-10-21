@@ -12,6 +12,15 @@ python3 -m http.server 8000
 
 Open `http://localhost:8000`. Serve the repository root, which contains `index.html`. Use HTTPS on a remote host to enable service workers and home-screen installation.
 
+## Free deployment / 免费部署
+
+See [免费部署指南](DEPLOYMENT.md) for step-by-step setup:
+
+- **Cloudflare Pages**: connect a public or private GitHub repository, set the build command to `node scripts/build-site.cjs` and output directory to `dist`. Use the free `pages.dev` address.
+- **GitHub Pages**: for a public repository on GitHub Free, choose **Settings → Pages → Source → GitHub Actions**, then run the included **Deploy GitHub Pages** workflow. Future pushes to `main` deploy automatically.
+
+Both options provide HTTPS for PWA installation. No backend, database, custom domain, or application secrets are needed. Free plan limits apply; see the linked guide for official sources, verification steps, and private-repository requirements. Node.js is only used to prepare the deployment folder; local reading still needs no build step.
+
 ## Features
 
 - Import local TXT and DRM-free EPUB files, including EPUB illustrations.
